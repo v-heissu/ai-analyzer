@@ -120,8 +120,12 @@ ini_set('display_errors', 1);
                                             </div>
                                             <div class="col-md-6">
                                                 <select class="form-select" id="claude_model">
-                                                    <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet</option>
-                                                    <option value="claude-3-5-haiku-20241022">Claude 3.5 Haiku</option>
+                                                    <option value="claude-sonnet-4-5-20250929" selected>Claude Sonnet 4.5 (Recommended)</option>
+                                                    <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (Fastest)</option>
+                                                    <option value="claude-opus-4-1-20250805">Claude Opus 4.1 (Specialized)</option>
+                                                    <option value="claude-sonnet-4-20250514">Claude Sonnet 4</option>
+                                                    <option value="claude-3-7-sonnet-20250219">Claude 3.7 Sonnet</option>
+                                                    <option value="claude-3-5-haiku-20241022">Claude 3.5 Haiku (Legacy)</option>
                                                 </select>
                                             </div>
                                         </div>

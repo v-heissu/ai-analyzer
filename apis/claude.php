@@ -4,7 +4,7 @@ class ClaudeAPI {
     private $model;
     private $base_url = 'https://api.anthropic.com/v1/messages';
     
-    public function __construct($api_key, $model = 'claude-3-5-sonnet-20241022') {
+    public function __construct($api_key, $model = 'claude-sonnet-4-5-20250929') {
         $this->api_key = $api_key;
         $this->model = $model;
     }
