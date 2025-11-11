@@ -14,24 +14,19 @@ cp config.example.json config.json
 {
   "apis": {
     "openai": {
-      "key": "sk-proj-XXXXX",
-      "model": "gpt-4o"
+      "key": "sk-proj-XXXXX"
     },
     "gemini": {
-      "key": "AIzaXXXXX",
-      "model": "gemini-2.5-flash"
+      "key": "AIzaXXXXX"
     },
     "claude": {
-      "key": "sk-ant-XXXXX",
-      "model": "claude-3-5-sonnet-20241022"
+      "key": "sk-ant-XXXXX"
     },
     "grok": {
-      "key": "xai-XXXXX",
-      "model": "grok-beta"
+      "key": "xai-XXXXX"
     },
     "perplexity": {
-      "key": "pplx-XXXXX",
-      "model": "llama-3.1-sonar-small-128k-online"
+      "key": "pplx-XXXXX"
     },
     "dataforseo": {
       "login": "tuaemail@example.com",
@@ -41,6 +36,8 @@ cp config.example.json config.json
   "default_brand": "NomeTuoBrand"
 }
 ```
+
+**Nota:** I modelli si selezionano direttamente dai dropdown nell'interfaccia, non serve metterli nel config!
 
 ### 3. Ricarica la pagina
 
@@ -93,8 +90,11 @@ Se per errore hai committato le chiavi:
 2. Rimuovi il file dalla history git
 3. Aggiorna il file `.gitignore`
 
-## Modelli Consigliati
+## Selezione Modelli
 
+I modelli AI si selezionano direttamente dai **dropdown nell'interfaccia**. Non serve specificarli nel config.json.
+
+**Modelli consigliati:**
 - **OpenAI**: `gpt-4o` (ottimo rapporto qualità/prezzo)
 - **Gemini**: `gemini-2.5-flash` (veloce ed economico)
 - **Claude**: `claude-3-5-sonnet-20241022` (qualità massima)

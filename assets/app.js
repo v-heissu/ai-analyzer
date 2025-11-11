@@ -1503,39 +1503,38 @@ ${errorDetails.responseText}
 
     function populateConfigFields(config) {
         // OpenAI
-        if (config.apis.openai) {
+        if (config.apis.openai && config.apis.openai.key) {
             $('#openai_key').val(config.apis.openai.key);
-            $('#openai_model').val(config.apis.openai.model);
         }
 
         // Gemini
-        if (config.apis.gemini) {
+        if (config.apis.gemini && config.apis.gemini.key) {
             $('#gemini_key').val(config.apis.gemini.key);
-            $('#gemini_model').val(config.apis.gemini.model);
         }
 
         // Claude
-        if (config.apis.claude) {
+        if (config.apis.claude && config.apis.claude.key) {
             $('#claude_key').val(config.apis.claude.key);
-            $('#claude_model').val(config.apis.claude.model);
         }
 
         // Grok
-        if (config.apis.grok) {
+        if (config.apis.grok && config.apis.grok.key) {
             $('#grok_key').val(config.apis.grok.key);
-            $('#grok_model').val(config.apis.grok.model);
         }
 
         // Perplexity
-        if (config.apis.perplexity) {
+        if (config.apis.perplexity && config.apis.perplexity.key) {
             $('#perplexity_key').val(config.apis.perplexity.key);
-            $('#perplexity_model').val(config.apis.perplexity.model);
         }
 
         // DataForSEO
         if (config.apis.dataforseo) {
-            $('#dataforseo_login').val(config.apis.dataforseo.login);
-            $('#dataforseo_password').val(config.apis.dataforseo.password);
+            if (config.apis.dataforseo.login) {
+                $('#dataforseo_login').val(config.apis.dataforseo.login);
+            }
+            if (config.apis.dataforseo.password) {
+                $('#dataforseo_password').val(config.apis.dataforseo.password);
+            }
         }
 
         // Default brand
@@ -1544,7 +1543,7 @@ ${errorDetails.responseText}
         }
 
         // Show success notification
-        showConfigNotification('Configurazione caricata da config.json', 'success');
+        showConfigNotification('API keys caricate da config.json', 'success');
     }
 
     function showConfigNotification(message, type) {
