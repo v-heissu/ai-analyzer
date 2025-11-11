@@ -329,7 +329,7 @@ function startAnalysisWithKeyword(keyword) {
 
     function loadResults(formData) {
         console.log('Making AJAX request with data:', formData);
-        
+
         $.ajax({
             url: 'process.php',
             method: 'POST',
@@ -339,6 +339,7 @@ function startAnalysisWithKeyword(keyword) {
             timeout: 180000, // 3 minuti timeout (per analisi con più query)
             success: function(response) {
                 console.log('Response received:', response);
+                hideGlobalLoadingMessage();
                 displayResults(response);
             },
             error: function(xhr, status, error) {
