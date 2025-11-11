@@ -1,0 +1,29 @@
+{
+  "apis": {
+    "openai": {
+      "key": "sk-...",
+      "model": "gpt-4o"
+    },
+    "gemini": {
+      "key": "AIza...",
+      "model": "gemini-2.5-flash"
+    },
+    "claude": {
+      "key": "sk-ant-...",
+      "model": "claude-3-5-sonnet-20241022"
+    },
+    "grok": {
+      "key": "xai-...",
+      "model": "grok-beta"
+    },
+    "perplexity": {
+      "key": "pplx-...",
+      "model": "llama-3.1-sonar-small-128k-online"
+    },
+    "dataforseo": {
+      "login": "your-email@example.com",
+      "password": "your-password"
+    }
+  },
+  "default_brand": ""
+}

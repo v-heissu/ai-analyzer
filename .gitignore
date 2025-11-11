@@ -1,0 +1,20 @@
+# API Keys Configuration (NEVER COMMIT!)
+config.json
+
+# Debug logs
+debug.log
+php_errors.log
+
+# Data directory
+data/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

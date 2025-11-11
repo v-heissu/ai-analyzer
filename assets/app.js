@@ -1,6 +1,9 @@
 $(document).ready(function() {
     let isKeywordMode = false;
-    
+
+    // Load configuration from config.json on page load
+    loadConfiguration();
+
     // Form submission handler
     $('#analyzerForm').on('submit', function(e) {
         e.preventDefault();
@@ -1475,4 +1478,92 @@ ${errorDetails.responseText}
             });
         }
     };
+
+    // Load configuration from config.json
+    function loadConfiguration() {
+        $.ajax({
+            url: 'load-config.php',
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.success && response.config) {
+                    console.log('Configuration loaded successfully');
+                    populateConfigFields(response.config);
+                } else {
+                    console.warn('Could not load config:', response.error);
+                    // Show a small notification
+                    showConfigNotification('Config non trovato. Compila manualmente o crea config.json', 'warning');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.warn('Error loading config:', error);
+            }
+        });
+    }
+
+    function populateConfigFields(config) {
+        // OpenAI
+        if (config.apis.openai) {
+            $('#openai_key').val(config.apis.openai.key);
+            $('#openai_model').val(config.apis.openai.model);
+        }
+
+        // Gemini
+        if (config.apis.gemini) {
+            $('#gemini_key').val(config.apis.gemini.key);
+            $('#gemini_model').val(config.apis.gemini.model);
+        }
+
+        // Claude
+        if (config.apis.claude) {
+            $('#claude_key').val(config.apis.claude.key);
+            $('#claude_model').val(config.apis.claude.model);
+        }
+
+        // Grok
+        if (config.apis.grok) {
+            $('#grok_key').val(config.apis.grok.key);
+            $('#grok_model').val(config.apis.grok.model);
+        }
+
+        // Perplexity
+        if (config.apis.perplexity) {
+            $('#perplexity_key').val(config.apis.perplexity.key);
+            $('#perplexity_model').val(config.apis.perplexity.model);
+        }
+
+        // DataForSEO
+        if (config.apis.dataforseo) {
+            $('#dataforseo_login').val(config.apis.dataforseo.login);
+            $('#dataforseo_password').val(config.apis.dataforseo.password);
+        }
+
+        // Default brand
+        if (config.default_brand) {
+            $('#brand').val(config.default_brand);
+        }
+
+        // Show success notification
+        showConfigNotification('Configurazione caricata da config.json', 'success');
+    }
+
+    function showConfigNotification(message, type) {
+        const alertClass = type === 'success' ? 'alert-success' : 'alert-warning';
+        const notification = $(`
+            <div class="alert ${alertClass} alert-dismissible fade show position-fixed"
+                 style="top: 20px; right: 20px; z-index: 10000; min-width: 300px;" role="alert">
+                <strong>${type === 'success' ? '✓' : '⚠'}</strong> ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `);
+
+        $('body').append(notification);
+
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            notification.fadeOut(500, function() {
+                $(this).remove();
+            });
+        }, 5000);
+    }
 });
