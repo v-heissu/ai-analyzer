@@ -161,7 +161,10 @@ function startAnalysisWithKeyword(keyword) {
     window.proceedWithSelectedQueries = function() {
         const selectedQueries = [];
         $('.fanout-checkbox:checked').each(function() {
-            selectedQueries.push($(this).val());
+            const index = parseInt($(this).val());
+            if (window.currentFanoutQueries && window.currentFanoutQueries[index]) {
+                selectedQueries.push(window.currentFanoutQueries[index]);
+            }
         });
 
         if (selectedQueries.length === 0) {
