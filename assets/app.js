@@ -185,10 +185,16 @@ function startAnalysisWithKeyword(keyword) {
 
     function startAnalysis(queries) {
         console.log('Starting analysis with queries:', queries);
-        
+
+        // Show global loading overlay immediately
+        showGlobalLoadingMessage();
+
         // Show results container
         $('#resultsContainer').show();
-        
+
+        // Clear previous content (fanout selection card)
+        $('#resultsContent').html('');
+
         // Scroll to results
         $('html, body').animate({
             scrollTop: $("#resultsContainer").offset().top - 20
@@ -196,7 +202,7 @@ function startAnalysisWithKeyword(keyword) {
 
         // Create progress indicators
         createProgressIndicators();
-        
+
         // Start the analysis process
         processAnalysis(queries);
     }
@@ -350,10 +356,13 @@ function startAnalysisWithKeyword(keyword) {
                     error: error,
                     readyState: xhr.readyState
                 });
-                
+
+                // Hide loading overlay on error
+                hideGlobalLoadingMessage();
+
                 let errorMessage = 'Errore sconosciuto';
                 let debugInfo = {};
-                
+
                 try {
                     const errorResponse = JSON.parse(xhr.responseText);
                     errorMessage = errorResponse.error || errorResponse.message || 'Errore nel parsing della risposta';
@@ -367,7 +376,7 @@ function startAnalysisWithKeyword(keyword) {
                         errorMessage = `Errore ${xhr.status}: ${error}`;
                     }
                 }
-                
+
                 displayDetailedError(errorMessage, xhr, debugInfo);
             }
         });
@@ -442,16 +451,94 @@ ${errorDetails.responseText}
         window.lastErrorDetails = errorDetails;
     }
 
+    function showGlobalLoadingMessage() {
+        // Remove existing overlay if any
+        $('#globalLoading').remove();
+
+        const loadingHTML = `
+            <div class="global-loading-overlay" id="globalLoading">
+                <div class="loading-content">
+                    <div class="spinner-container">
+                        <div class="spinner-large"></div>
+                    </div>
+                    <h4 class="mt-3">Analisi in Corso</h4>
+                    <p class="text-muted">
+                        <span id="loadingMessage">Interrogazione AI models in parallelo...</span>
+                    </p>
+                    <div class="progress" style="width: 300px; height: 8px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated"
+                             id="globalProgressBar"
+                             style="width: 0%"></div>
+                    </div>
+                    <p class="small text-muted mt-2">
+                        <span id="estimatedTime">Tempo stimato: 30-180 secondi</span>
+                    </p>
+                </div>
+            </div>
+        `;
+
+        $('body').append(loadingHTML);
+
+        // Dynamic messages that change every 15 seconds
+        const messages = [
+            'Interrogazione AI models in parallelo...',
+            'Recupero dati da DataForSEO...',
+            'Analisi GPT delle risposte...',
+            'Elaborazione sentiment e topic...',
+            'Generazione insights strategici...',
+            'Finalizzazione analisi aggregata...'
+        ];
+
+        let messageIndex = 0;
+        let progress = 0;
+
+        // Update message every 15 seconds
+        window.loadingMessageInterval = setInterval(() => {
+            messageIndex = (messageIndex + 1) % messages.length;
+            $('#loadingMessage').fadeOut(300, function() {
+                $(this).text(messages[messageIndex]).fadeIn(300);
+            });
+        }, 15000);
+
+        // Animate progress bar from 0 to 90% over 120 seconds
+        window.loadingProgressInterval = setInterval(() => {
+            progress += 1;
+            if (progress <= 90) {
+                $('#globalProgressBar').css('width', progress + '%');
+            }
+        }, 1333); // 120 seconds / 90 steps = 1.333 seconds per step
+    }
+
+    function hideGlobalLoadingMessage() {
+        // Complete progress bar to 100%
+        $('#globalProgressBar').css('width', '100%');
+
+        // Clear intervals
+        if (window.loadingMessageInterval) {
+            clearInterval(window.loadingMessageInterval);
+        }
+        if (window.loadingProgressInterval) {
+            clearInterval(window.loadingProgressInterval);
+        }
+
+        // Fade out and remove overlay
+        setTimeout(() => {
+            $('#globalLoading').fadeOut(500, function() {
+                $(this).remove();
+            });
+        }, 500);
+    }
+
     function displayResults(data) {
         // Create results visualization with tabs
         const resultsHTML = generateResultsHTML(data);
         $('#resultsContent').html(resultsHTML);
-        
+
         // Wait for DOM to be ready, then initialize charts
         setTimeout(() => {
             initializeCharts(data);
             animateCounters();
-            
+
             // Animate domain bars after a delay
             setTimeout(() => {
                 if (data.analysis && data.analysis.domain_frequency) {
