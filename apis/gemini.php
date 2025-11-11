@@ -2,9 +2,9 @@
 class GeminiAPI {
     private $api_key;
     private $model;
-    private $base_url = 'https://generativelanguage.googleapis.com/v1/models/';
-    
-    public function __construct($api_key, $model = 'gemini-1.5-flash') {
+    private $base_url = 'https://generativelanguage.googleapis.com/v1beta/models/';
+
+    public function __construct($api_key, $model = 'gemini-2.5-flash') {
         $this->api_key = $api_key;
         $this->model = $model;
     }
