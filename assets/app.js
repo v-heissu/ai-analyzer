@@ -32,7 +32,20 @@ $(document).ready(function() {
     }
 
 function startAnalysisWithKeyword(keyword) {
-    const geminiKey = $('#gemini_key').val();
+    // Helper to get real API key (unmasked) - same as in processAnalysis
+    function getRealKey(inputId) {
+        const $input = $(inputId);
+        const original = $input.attr('data-original');
+        const current = $input.val();
+
+        // If value is masked (contains •), use original
+        if (current && current.includes('•') && original) {
+            return original;
+        }
+        return current;
+    }
+
+    const geminiKey = getRealKey('#gemini_key');
     if (!geminiKey) {
         alert('Per le keyword serve la API key di Gemini per generare le fanout queries');
         return;
@@ -51,7 +64,7 @@ function startAnalysisWithKeyword(keyword) {
             </div>
         </div>
     `);
-    
+
     $('html, body').animate({
         scrollTop: $("#resultsContainer").offset().top - 20
     }, 500);
@@ -243,6 +256,19 @@ function startAnalysisWithKeyword(keyword) {
     }
 
     function processAnalysis(queries) {
+        // Helper to get real API key (unmasked)
+        function getRealKey(inputId) {
+            const $input = $(inputId);
+            const original = $input.attr('data-original');
+            const current = $input.val();
+
+            // If value is masked (contains •), use original
+            if (current && current.includes('•') && original) {
+                return original;
+            }
+            return current;
+        }
+
         // Collect form data
         const formData = {
             queries: queries, // Array di query
@@ -252,33 +278,33 @@ function startAnalysisWithKeyword(keyword) {
             is_keyword_mode: isKeywordMode,
             apis: {
                 openai: {
-                    key: $('#openai_key').val(),
+                    key: getRealKey('#openai_key'),
                     model: $('#openai_model').val(),
-                    enabled: $('#openai_key').val() ? true : false
+                    enabled: getRealKey('#openai_key') ? true : false
                 },
                 gemini: {
-                    key: $('#gemini_key').val(),
+                    key: getRealKey('#gemini_key'),
                     model: $('#gemini_model').val(),
-                    enabled: $('#gemini_key').val() ? true : false
+                    enabled: getRealKey('#gemini_key') ? true : false
                 },
                 claude: {
-                    key: $('#claude_key').val(),
+                    key: getRealKey('#claude_key'),
                     model: $('#claude_model').val(),
-                    enabled: $('#claude_key').val() ? true : false
+                    enabled: getRealKey('#claude_key') ? true : false
                 },
                 grok: {
-                    key: $('#grok_key').val(),
+                    key: getRealKey('#grok_key'),
                     model: $('#grok_model').val(),
-                    enabled: $('#grok_key').val() ? true : false
+                    enabled: getRealKey('#grok_key') ? true : false
                 },
                 perplexity: {
-                    key: $('#perplexity_key').val(),
+                    key: getRealKey('#perplexity_key'),
                     model: $('#perplexity_model').val(),
-                    enabled: $('#perplexity_key').val() ? true : false
+                    enabled: getRealKey('#perplexity_key') ? true : false
                 },
                 dataforseo: {
                     login: $('#dataforseo_login').val(),
-                    password: $('#dataforseo_password').val(),
+                    password: getRealKey('#dataforseo_password'),
                     enabled: $('#dataforseo_login').val() ? true : false
                 }
             }
@@ -1504,33 +1530,54 @@ ${errorDetails.responseText}
     function populateConfigFields(config) {
         let keysLoaded = 0;
 
+        // Store original keys for later use (hidden from UI)
+        window.originalApiKeys = {};
+
+        // Helper function to mask API key (show only last 4 chars)
+        function maskApiKey(key) {
+            if (!key || key.length < 8) return key;
+            const lastFour = key.slice(-4);
+            const masked = '•'.repeat(Math.min(key.length - 4, 20));
+            return masked + lastFour;
+        }
+
         // OpenAI
         if (config.apis.openai && config.apis.openai.key) {
-            $('#openai_key').val(config.apis.openai.key);
+            window.originalApiKeys.openai = config.apis.openai.key;
+            $('#openai_key').val(maskApiKey(config.apis.openai.key))
+                .attr('data-original', config.apis.openai.key);
             keysLoaded++;
         }
 
         // Gemini
         if (config.apis.gemini && config.apis.gemini.key) {
-            $('#gemini_key').val(config.apis.gemini.key);
+            window.originalApiKeys.gemini = config.apis.gemini.key;
+            $('#gemini_key').val(maskApiKey(config.apis.gemini.key))
+                .attr('data-original', config.apis.gemini.key);
             keysLoaded++;
         }
 
         // Claude
         if (config.apis.claude && config.apis.claude.key) {
-            $('#claude_key').val(config.apis.claude.key);
+            window.originalApiKeys.claude = config.apis.claude.key;
+            $('#claude_key').val(maskApiKey(config.apis.claude.key))
+                .attr('data-original', config.apis.claude.key);
             keysLoaded++;
         }
 
         // Grok
         if (config.apis.grok && config.apis.grok.key) {
-            $('#grok_key').val(config.apis.grok.key);
+            window.originalApiKeys.grok = config.apis.grok.key;
+            $('#grok_key').val(maskApiKey(config.apis.grok.key))
+                .attr('data-original', config.apis.grok.key);
             keysLoaded++;
         }
 
         // Perplexity
         if (config.apis.perplexity && config.apis.perplexity.key) {
-            $('#perplexity_key').val(config.apis.perplexity.key);
+            window.originalApiKeys.perplexity = config.apis.perplexity.key;
+            $('#perplexity_key').val(maskApiKey(config.apis.perplexity.key))
+                .attr('data-original', config.apis.perplexity.key);
             keysLoaded++;
         }
 
@@ -1541,7 +1588,9 @@ ${errorDetails.responseText}
                 keysLoaded++;
             }
             if (config.apis.dataforseo.password) {
-                $('#dataforseo_password').val(config.apis.dataforseo.password);
+                window.originalApiKeys.dataforseo_password = config.apis.dataforseo.password;
+                $('#dataforseo_password').val(maskApiKey(config.apis.dataforseo.password))
+                    .attr('data-original', config.apis.dataforseo.password);
             }
         }
 
@@ -1550,12 +1599,50 @@ ${errorDetails.responseText}
             $('#brand').val(config.default_brand);
         }
 
+        // Setup focus handlers to restore original keys when editing
+        setupKeyFieldHandlers();
+
         // Show notification only if keys were actually loaded
         if (keysLoaded > 0) {
             showConfigNotification(`✓ ${keysLoaded} API key${keysLoaded > 1 ? 's' : ''} caricata${keysLoaded > 1 ? 'e' : ''} da config.json`, 'success');
         } else {
             console.info('Config.json trovato ma vuoto. Compila le tue API keys nel file.');
         }
+    }
+
+    function setupKeyFieldHandlers() {
+        // When user focuses on a masked field, show the real key
+        $('input[data-original]').on('focus', function() {
+            const $input = $(this);
+            const original = $input.attr('data-original');
+            if (original && $input.val().includes('•')) {
+                $input.val(original);
+                $input.select(); // Select all for easy replacement
+            }
+        });
+
+        // When user blurs without changing, re-mask it
+        $('input[data-original]').on('blur', function() {
+            const $input = $(this);
+            const original = $input.attr('data-original');
+            const current = $input.val();
+
+            // If user didn't change it, re-mask
+            if (current === original) {
+                const masked = maskApiKey(original);
+                $input.val(masked);
+            } else if (current && current.length > 8) {
+                // User changed it, update the original
+                $input.attr('data-original', current);
+            }
+        });
+    }
+
+    function maskApiKey(key) {
+        if (!key || key.length < 8) return key;
+        const lastFour = key.slice(-4);
+        const masked = '•'.repeat(Math.min(key.length - 4, 20));
+        return masked + lastFour;
     }
 
     function showConfigNotification(message, type) {

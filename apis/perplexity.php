@@ -4,7 +4,7 @@ class PerplexityAPI {
     private $model;
     private $base_url = 'https://api.perplexity.ai/chat/completions';
 
-    public function __construct($api_key, $model = 'llama-3.1-sonar-small-128k-online') {
+    public function __construct($api_key, $model = 'sonar-pro') {
         $this->api_key = $api_key;
         $this->model = $model;
     }

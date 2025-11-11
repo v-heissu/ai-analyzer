@@ -4,7 +4,7 @@ class GrokAPI {
     private $model;
     private $base_url = 'https://api.x.ai/v1/chat/completions';
     
-    public function __construct($api_key, $model = 'grok-beta') {
+    public function __construct($api_key, $model = 'grok-2-latest') {
         $this->api_key = $api_key;
         $this->model = $model;
     }

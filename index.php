@@ -9,6 +9,7 @@ ini_set('display_errors', 1);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Landscape Analyzer</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/style.css">
     <link rel="stylesheet" href="assets/palette.css">
@@ -133,7 +134,9 @@ ini_set('display_errors', 1);
                                             </div>
                                             <div class="col-md-6">
                                                 <select class="form-select" id="grok_model">
-                                                    <option value="grok-beta">Grok Beta</option>
+                                                    <option value="grok-2-latest" selected>Grok 2 Latest</option>
+                                                    <option value="grok-2-1212">Grok 2 (December 2024)</option>
+                                                    <option value="grok-beta">Grok Beta (Legacy)</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -146,8 +149,10 @@ ini_set('display_errors', 1);
                                             </div>
                                             <div class="col-md-6">
                                                 <select class="form-select" id="perplexity_model">
-                                                    <option value="llama-3.1-sonar-small-128k-online">Llama 3.1 Sonar Small Online</option>
+                                                    <option value="sonar-pro" selected>Sonar Pro (Latest)</option>
+                                                    <option value="sonar">Sonar (Standard)</option>
                                                     <option value="llama-3.1-sonar-large-128k-online">Llama 3.1 Sonar Large Online</option>
+                                                    <option value="llama-3.1-sonar-small-128k-online">Llama 3.1 Sonar Small Online</option>
                                                 </select>
                                             </div>
                                         </div>
