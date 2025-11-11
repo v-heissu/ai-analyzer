@@ -157,6 +157,32 @@ function startAnalysisWithKeyword(keyword) {
         });
     }
 
+    // Funzione per procedere con le query selezionate
+    window.proceedWithSelectedQueries = function() {
+        const selectedQueries = [];
+        $('.fanout-checkbox:checked').each(function() {
+            selectedQueries.push($(this).val());
+        });
+
+        if (selectedQueries.length === 0) {
+            alert('Seleziona almeno una query');
+            return;
+        }
+
+        console.log('Proceeding with selected queries:', selectedQueries);
+        startAnalysis(selectedQueries);
+    };
+
+    // Funzione per selezionare tutte le query
+    window.selectAllQueries = function() {
+        $('.fanout-checkbox').slice(0, 5).prop('checked', true).trigger('change');
+    };
+
+    // Funzione per resettare la selezione
+    window.resetSelection = function() {
+        $('.fanout-checkbox').prop('checked', false).prop('disabled', false).trigger('change');
+    };
+
     function startAnalysis(queries) {
         console.log('Starting analysis with queries:', queries);
         
