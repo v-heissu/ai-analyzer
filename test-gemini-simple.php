@@ -32,6 +32,12 @@ try {
             echo 'API Key: <input type="text" name="api_key" value="' . htmlspecialchars($_POST['api_key'] ?? '') . '" size="50"><br><br>';
             echo 'Keyword: <input type="text" name="keyword" value="' . htmlspecialchars($_POST['keyword'] ?? 'scarpe running') . '"><br><br>';
             echo 'Brand: <input type="text" name="brand" value="' . htmlspecialchars($_POST['brand'] ?? '') . '"><br><br>';
+            echo 'Modello: <select name="model">';
+            echo '<option value="gemini-2.5-flash" selected>gemini-2.5-flash (Latest)</option>';
+            echo '<option value="gemini-1.5-flash">gemini-1.5-flash</option>';
+            echo '<option value="gemini-1.5-pro">gemini-1.5-pro</option>';
+            echo '<option value="gemini-2.0-flash-exp">gemini-2.0-flash-exp</option>';
+            echo '</select><br><br>';
             echo '<button type="submit">Test Fanout</button>';
             echo '</form>';
 
@@ -42,13 +48,15 @@ try {
                 $api_key = $_POST['api_key'];
                 $keyword = $_POST['keyword'] ?? 'test';
                 $brand = $_POST['brand'] ?? '';
+                $model = $_POST['model'] ?? 'gemini-2.5-flash';
 
                 echo "<strong>Configurazione:</strong><br>";
                 echo "API Key: " . substr($api_key, 0, 20) . "...<br>";
+                echo "Modello: {$model}<br>";
                 echo "Keyword: {$keyword}<br>";
                 echo "Brand: " . ($brand ?: '(nessuno)') . "<br><br>";
 
-                $gemini = new GeminiAPI($api_key, 'gemini-1.5-flash');
+                $gemini = new GeminiAPI($api_key, $model);
                 echo "Chiamando generateFanOutQueries...<br><br>";
 
                 $start = microtime(true);

@@ -39,7 +39,8 @@ ini_set('display_errors', 1);
         <div>
             <label>Modello:</label><br>
             <select name="model">
-                <option value="gemini-1.5-flash" selected>gemini-1.5-flash</option>
+                <option value="gemini-2.5-flash" selected>gemini-2.5-flash (Latest)</option>
+                <option value="gemini-1.5-flash">gemini-1.5-flash</option>
                 <option value="gemini-1.5-pro">gemini-1.5-pro</option>
                 <option value="gemini-2.0-flash-exp">gemini-2.0-flash-exp</option>
             </select>
@@ -55,7 +56,7 @@ ini_set('display_errors', 1);
         $api_key = $_POST['api_key'] ?? '';
         $keyword = $_POST['keyword'] ?? '';
         $brand = $_POST['brand'] ?? '';
-        $model = $_POST['model'] ?? 'gemini-1.5-flash';
+        $model = $_POST['model'] ?? 'gemini-2.5-flash';
 
         echo "<h2>Testing...</h2>";
         echo "<div class='result'>";
@@ -64,6 +65,7 @@ ini_set('display_errors', 1);
         echo "Keyword: {$keyword}<br>";
         echo "Brand: " . ($brand ?: '(nessuno)') . "<br>";
         echo "API Key: " . substr($api_key, 0, 10) . "..." . substr($api_key, -5) . "<br>";
+        echo "Endpoint: v1beta<br>";
         echo "</div>";
 
         try {
