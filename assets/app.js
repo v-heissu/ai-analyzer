@@ -1487,50 +1487,58 @@ ${errorDetails.responseText}
             dataType: 'json',
             success: function(response) {
                 if (response.success && response.config) {
-                    console.log('Configuration loaded successfully');
+                    console.log('✓ Config.json caricato correttamente');
                     populateConfigFields(response.config);
                 } else {
-                    console.warn('Could not load config:', response.error);
-                    // Show a small notification
-                    showConfigNotification('Config non trovato. Compila manualmente o crea config.json', 'warning');
+                    console.warn('⚠ Config.json non trovato:', response.error);
+                    showConfigNotification('⚠ Config.json non trovato. Inserisci le API keys manualmente', 'warning');
                 }
             },
             error: function(xhr, status, error) {
-                console.warn('Error loading config:', error);
+                console.warn('⚠ Errore caricamento config.json:', error);
+                console.info('💡 Inserisci le API keys manualmente o crea il file config.json (vedi CONFIG_README.md)');
             }
         });
     }
 
     function populateConfigFields(config) {
+        let keysLoaded = 0;
+
         // OpenAI
         if (config.apis.openai && config.apis.openai.key) {
             $('#openai_key').val(config.apis.openai.key);
+            keysLoaded++;
         }
 
         // Gemini
         if (config.apis.gemini && config.apis.gemini.key) {
             $('#gemini_key').val(config.apis.gemini.key);
+            keysLoaded++;
         }
 
         // Claude
         if (config.apis.claude && config.apis.claude.key) {
             $('#claude_key').val(config.apis.claude.key);
+            keysLoaded++;
         }
 
         // Grok
         if (config.apis.grok && config.apis.grok.key) {
             $('#grok_key').val(config.apis.grok.key);
+            keysLoaded++;
         }
 
         // Perplexity
         if (config.apis.perplexity && config.apis.perplexity.key) {
             $('#perplexity_key').val(config.apis.perplexity.key);
+            keysLoaded++;
         }
 
         // DataForSEO
         if (config.apis.dataforseo) {
             if (config.apis.dataforseo.login) {
                 $('#dataforseo_login').val(config.apis.dataforseo.login);
+                keysLoaded++;
             }
             if (config.apis.dataforseo.password) {
                 $('#dataforseo_password').val(config.apis.dataforseo.password);
@@ -1542,8 +1550,12 @@ ${errorDetails.responseText}
             $('#brand').val(config.default_brand);
         }
 
-        // Show success notification
-        showConfigNotification('API keys caricate da config.json', 'success');
+        // Show notification only if keys were actually loaded
+        if (keysLoaded > 0) {
+            showConfigNotification(`✓ ${keysLoaded} API key${keysLoaded > 1 ? 's' : ''} caricata${keysLoaded > 1 ? 'e' : ''} da config.json`, 'success');
+        } else {
+            console.info('Config.json trovato ma vuoto. Compila le tue API keys nel file.');
+        }
     }
 
     function showConfigNotification(message, type) {
