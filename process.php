@@ -4,6 +4,10 @@ ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 ini_set('error_log', 'php_errors.log');
 
+// Aumenta timeout per analisi complesse (fino a 3 minuti)
+set_time_limit(180);
+ini_set('max_execution_time', '180');
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');

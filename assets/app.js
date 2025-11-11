@@ -336,7 +336,7 @@ function startAnalysisWithKeyword(keyword) {
             data: JSON.stringify(formData),
             contentType: 'application/json',
             dataType: 'json',
-            timeout: 60000, // 60 second timeout
+            timeout: 180000, // 3 minuti timeout (per analisi con più query)
             success: function(response) {
                 console.log('Response received:', response);
                 displayResults(response);
