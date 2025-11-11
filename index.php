@@ -67,11 +67,15 @@ ini_set('display_errors', 1);
                                             data-bs-target="#claude-config" type="button">Claude</button>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="grok-tab" data-bs-toggle="pill" 
+                                        <button class="nav-link" id="grok-tab" data-bs-toggle="pill"
                                             data-bs-target="#grok-config" type="button">Grok</button>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="dataforseo-tab" data-bs-toggle="pill" 
+                                        <button class="nav-link" id="perplexity-tab" data-bs-toggle="pill"
+                                            data-bs-target="#perplexity-config" type="button">Perplexity</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="dataforseo-tab" data-bs-toggle="pill"
                                             data-bs-target="#dataforseo-config" type="button">DataForSEO</button>
                                     </li>
                                 </ul>
@@ -122,12 +126,26 @@ ini_set('display_errors', 1);
                                     <div class="tab-pane fade" id="grok-config">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" id="grok_key" 
+                                                <input type="text" class="form-control" id="grok_key"
                                                     placeholder="API Key Grok">
                                             </div>
                                             <div class="col-md-6">
                                                 <select class="form-select" id="grok_model">
                                                     <option value="grok-beta">Grok Beta</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="perplexity-config">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control" id="perplexity_key"
+                                                    placeholder="API Key Perplexity">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <select class="form-select" id="perplexity_model">
+                                                    <option value="llama-3.1-sonar-small-128k-online">Llama 3.1 Sonar Small Online</option>
+                                                    <option value="llama-3.1-sonar-large-128k-online">Llama 3.1 Sonar Large Online</option>
                                                 </select>
                                             </div>
                                         </div>

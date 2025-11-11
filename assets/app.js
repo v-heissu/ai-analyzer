@@ -181,8 +181,9 @@ function startAnalysisWithKeyword(keyword) {
             {id: 'openai', name: 'Generazione Risposte (OpenAI)', icon: '🤖'},
             {id: 'claude', name: 'Analisi Avanzata (Claude)', icon: '📊'},
             {id: 'grok', name: 'Insights Aggiuntivi (Grok)', icon: '⚡'},
+            {id: 'perplexity', name: 'Ricerca Real-time (Perplexity)', icon: '🔮'},
             {id: 'dataforseo', name: 'Dati SERP (DataForSEO)', icon: '🔍'},
-            {id: 'analysis', name: 'Elaborazione Comparativa', icon: '📈'}
+            {id: 'analysis', name: 'Elaborazione AI Comparativa', icon: '📈'}
         ];
 
         let progressHTML = '';
@@ -232,6 +233,11 @@ function startAnalysisWithKeyword(keyword) {
                     model: $('#grok_model').val(),
                     enabled: $('#grok_key').val() ? true : false
                 },
+                perplexity: {
+                    key: $('#perplexity_key').val(),
+                    model: $('#perplexity_model').val(),
+                    enabled: $('#perplexity_key').val() ? true : false
+                },
                 dataforseo: {
                     login: $('#dataforseo_login').val(),
                     password: $('#dataforseo_password').val(),
@@ -247,7 +253,7 @@ function startAnalysisWithKeyword(keyword) {
     }
 
     function simulateProgressiveAnalysis(formData) {
-        const steps = ['gemini', 'openai', 'claude', 'grok', 'dataforseo', 'analysis'];
+        const steps = ['gemini', 'openai', 'claude', 'grok', 'perplexity', 'dataforseo', 'analysis'];
         let currentStep = 0;
 
         function processNextStep() {
@@ -467,11 +473,18 @@ ${errorDetails.responseText}
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="comparison-tab" data-bs-toggle="tab" 
+                        <button class="nav-link" id="comparison-tab" data-bs-toggle="tab"
                                 data-bs-target="#comparison" type="button">
                             🥊 SERP vs AI
                         </button>
                     </li>
+                    ${data.aggregate_analysis && Object.keys(data.aggregate_analysis).length > 0 ? `
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="insights-tab" data-bs-toggle="tab"
+                                data-bs-target="#insights" type="button">
+                            💡 Strategic Insights
+                        </button>
+                    </li>` : ''}
                     ${data.fanout_queries && data.fanout_queries.length > 0 ? `
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="fanout-tab" data-bs-toggle="tab" 
@@ -509,7 +522,13 @@ ${errorDetails.responseText}
                     <div class="tab-pane fade" id="comparison" role="tabpanel">
                         ${generateComparisonTab(data)}
                     </div>
-                    
+
+                    ${data.aggregate_analysis && Object.keys(data.aggregate_analysis).length > 0 ? `
+                    <!-- Strategic Insights Tab -->
+                    <div class="tab-pane fade" id="insights" role="tabpanel">
+                        ${generateInsightsTab(data)}
+                    </div>` : ''}
+
                     ${data.fanout_queries && data.fanout_queries.length > 0 ? `
                     <!-- Fanout Tab -->
                     <div class="tab-pane fade" id="fanout" role="tabpanel">
@@ -527,6 +546,10 @@ ${errorDetails.responseText}
     }
 
     function generateOverviewTab(data) {
+        const aggAnalysis = data.aggregate_analysis || {};
+        const consensusPercent = Math.round((aggAnalysis.consensus_level || 0) * 100);
+        const diversityScore = aggAnalysis.topic_diversity || 0;
+
         return `
             <div class="row">
                 <!-- Key Metrics Cards -->
@@ -544,23 +567,145 @@ ${errorDetails.responseText}
                 </div>
                 <div class="col-md-3">
                     <div class="metric-card">
-                        <div class="metric-number" data-count="${data.metrics?.brand_mentions || 0}">0</div>
-                        <div class="h6 text-muted">🏷️ Menzioni Brand</div>
+                        <div class="metric-number" data-count="${consensusPercent}">0</div>
+                        <div class="h6 text-muted">🎯 AI Consensus %</div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="metric-card">
-                        <div class="metric-number" data-count="${Math.round((data.metrics?.sentiment_score || 0) * 100)}">0</div>
-                        <div class="h6 text-muted">😊 Sentiment %</div>
+                        <div class="metric-number" data-count="${diversityScore}">0</div>
+                        <div class="h6 text-muted">📚 Topic Diversity</div>
                     </div>
                 </div>
-                
+
                 <!-- Topic Coverage Chart con altezza fissa -->
                 <div class="col-12 mt-4">
                     <div class="chart-container">
                         <h5>🎯 Topic Coverage Overview</h5>
                         <div style="height: 400px; position: relative;">
                             <canvas id="topicsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function generateInsightsTab(data) {
+        const agg = data.aggregate_analysis || {};
+        const brand = agg.brand_landscape || {};
+        const insights = agg.strategic_insights || [];
+        const opportunities = agg.opportunities || [];
+        const risks = agg.risks || [];
+        const aiDiffs = agg.ai_model_differences || {};
+
+        return `
+            <div class="row">
+                <!-- Brand Landscape Card -->
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">🏆 Brand Landscape</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>Visibilità Generale</span>
+                                    <strong>${brand.overall_visibility || 0}/10</strong>
+                                </div>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-success" style="width: ${(brand.overall_visibility || 0) * 10}%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>Consistenza Posizionamento</span>
+                                    <strong>${brand.positioning_consistency || 0}/10</strong>
+                                </div>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-info" style="width: ${(brand.positioning_consistency || 0) * 10}%"></div>
+                                </div>
+                            </div>
+                            ${brand.competitive_context && brand.competitive_context.length > 0 ? `
+                            <div class="mb-3">
+                                <h6>Competitor nel Context:</h6>
+                                <div>
+                                    ${brand.competitive_context.map(comp => `<span class="badge bg-warning text-dark me-1">${comp}</span>`).join('')}
+                                </div>
+                            </div>` : ''}
+                            ${brand.recommendation ? `
+                            <div class="alert alert-info mb-0">
+                                <strong>💡 Raccomandazione:</strong><br>
+                                ${brand.recommendation}
+                            </div>` : ''}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Model Differences -->
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-purple text-white">
+                            <h5 class="mb-0">🤖 AI Model Differences</h5>
+                        </div>
+                        <div class="card-body">
+                            ${Object.entries(aiDiffs).map(([model, diff]) => `
+                                <div class="mb-3">
+                                    <h6 class="text-uppercase">${model}</h6>
+                                    <p class="small text-muted mb-0">${diff}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategic Insights -->
+                <div class="col-md-12 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">💡 Strategic Insights</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                ${insights.map((insight, idx) => `
+                                    <div class="col-md-4 mb-3">
+                                        <div class="alert alert-success h-100">
+                                            <strong>${idx + 1}.</strong> ${insight}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opportunities & Risks -->
+                <div class="col-md-6">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">🚀 Opportunità</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                ${opportunities.map(opp => `
+                                    <li class="list-group-item">✅ ${opp}</li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-danger text-white">
+                            <h5 class="mb-0">⚠️ Rischi</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                ${risks.map(risk => `
+                                    <li class="list-group-item">⛔ ${risk}</li>
+                                `).join('')}
+                            </ul>
                         </div>
                     </div>
                 </div>

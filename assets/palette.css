@@ -1,0 +1,27 @@
+/* Color Palette for AI Landscape Analyzer */
+
+:root {
+    --accent-blue: #2563eb;
+    --accent-green: #059669;
+    --accent-purple: #7c3aed;
+    --accent-orange: #ea580c;
+    --text-muted: #64748b;
+    --bg-light: #f8fafc;
+    --border-color: #e2e8f0;
+}
+
+.text-purple {
+    color: var(--accent-purple) !important;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)) !important;
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, var(--accent-green), var(--accent-blue)) !important;
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, var(--accent-orange), #f59e0b) !important;
+}

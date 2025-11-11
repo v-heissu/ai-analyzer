@@ -44,78 +44,25 @@ class ClaudeAPI {
         
         $result = [
             'content' => '',
-            'domains' => [],
-            'sentiment' => 0,
-            'topics' => [],
             'raw_response' => null
         ];
-        
+
         if ($http_code === 200) {
             $decoded = json_decode($response, true);
             if (isset($decoded['content'][0]['text'])) {
-                $content = $decoded['content'][0]['text'];
-                $result['content'] = $content;
-                $result['domains'] = $this->extractDomains($content);
-                $result['sentiment'] = $this->analyzeSentiment($content);
-                $result['topics'] = $this->extractTopics($content);
+                $result['content'] = $decoded['content'][0]['text'];
                 $result['raw_response'] = $decoded;
             }
         }
-        
+
         return $result;
     }
-    
+
     private function getEmptyResult() {
         return [
             'content' => 'API Key non configurata',
-            'domains' => [],
-            'sentiment' => 0,
-            'topics' => [],
             'raw_response' => null
         ];
-    }
-    
-    // Metodi identici a OpenAI per extractDomains, analyzeSentiment, extractTopics
-    private function extractDomains($text) {
-        $pattern = '/(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})+)/';
-        preg_match_all($pattern, $text, $matches);
-        return array_unique($matches[1] ?? []);
-    }
-    
-    private function analyzeSentiment($text) {
-        $positive_words = ['good', 'great', 'excellent', 'best', 'amazing', 'buono', 'ottimo'];
-        $negative_words = ['bad', 'terrible', 'worst', 'awful', 'cattivo', 'pessimo'];
-        
-        $positive_count = 0;
-        $negative_count = 0;
-        
-        foreach ($positive_words as $word) {
-            $positive_count += substr_count(strtolower($text), $word);
-        }
-        
-        foreach ($negative_words as $word) {
-            $negative_count += substr_count(strtolower($text), $word);
-        }
-        
-        if ($positive_count > $negative_count) return 1;
-        if ($negative_count > $positive_count) return -1;
-        return 0;
-    }
-    
-    private function extractTopics($text) {
-        $words = str_word_count(strtolower($text), 1);
-        $stop_words = ['the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 'was', 'one', 'our', 'out', 'day', 'get', 'has', 'him', 'his', 'how', 'man', 'new', 'now', 'old', 'see', 'two', 'way', 'who', 'boy', 'did', 'its', 'let', 'put', 'say', 'she', 'too', 'use'];
-        
-        $topics = [];
-        foreach ($words as $word) {
-            if (strlen($word) > 4 && !in_array($word, $stop_words)) {
-                $topics[] = $word;
-            }
-        }
-        
-        $topic_counts = array_count_values($topics);
-        arsort($topic_counts);
-        return array_keys(array_slice($topic_counts, 0, 5));
     }
 }
 ?>

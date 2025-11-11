@@ -19,7 +19,9 @@ require_once __DIR__ . '/apis/gemini.php';
 require_once __DIR__ . '/apis/openai.php';
 require_once __DIR__ . '/apis/claude.php';
 require_once __DIR__ . '/apis/grok.php';
+require_once __DIR__ . '/apis/perplexity.php';
 require_once __DIR__ . '/apis/dataforseo.php';
+require_once __DIR__ . '/AnalysisEngine.php';
 
 class AIAnalyzer {
     private $config;
@@ -147,6 +149,23 @@ class AIAnalyzer {
             file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Performing comparative analysis\n", FILE_APPEND);
             $results['analysis'] = $this->performComparativeAnalysis($results);
             $results['metrics'] = $this->calculateMetrics($results);
+
+            // Step 4: Analisi aggregata con GPT (BLOB completo)
+            if ($input['apis']['openai']['enabled'] && $input['apis']['openai']['key']) {
+                try {
+                    file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Starting aggregate GPT analysis\n", FILE_APPEND);
+                    $analysisEngine = new AnalysisEngine($input['apis']['openai']['key']);
+                    $results['aggregate_analysis'] = $analysisEngine->analyzeAggregateResponses(
+                        $results['ai_responses'],
+                        $input['brand'] ?? '',
+                        $queries_to_process
+                    );
+                    file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Aggregate analysis completed\n", FILE_APPEND);
+                } catch (Exception $e) {
+                    file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Aggregate Analysis Error: " . $e->getMessage() . "\n", FILE_APPEND);
+                    $results['aggregate_analysis'] = [];
+                }
+            }
             
             // Cache results
             file_put_contents($cache_file, json_encode($results));
@@ -162,7 +181,7 @@ class AIAnalyzer {
     
     private function processWithAllAIs($query, $apis, $brand) {
         $results = [];
-        
+
         // Gemini - sia per fanout che come motore di risposta
         if ($apis['gemini']['enabled'] && $apis['gemini']['key']) {
             try {
@@ -171,17 +190,11 @@ class AIAnalyzer {
                 $results['gemini'] = $gemini->query($query, $brand);
                 file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Gemini completed\n", FILE_APPEND);
             } catch (Exception $e) {
-                $results['gemini'] = [
-                    'error' => 'Gemini Error: ' . $e->getMessage(), 
-                    'content' => '', 
-                    'domains' => [], 
-                    'sentiment' => 0, 
-                    'topics' => []
-                ];
+                $results['gemini'] = ['error' => 'Gemini Error: ' . $e->getMessage(), 'content' => ''];
                 file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Gemini Error: " . $e->getMessage() . "\n", FILE_APPEND);
             }
         }
-        
+
         // OpenAI
         if ($apis['openai']['enabled'] && $apis['openai']['key']) {
             try {
@@ -190,17 +203,11 @@ class AIAnalyzer {
                 $results['openai'] = $openai->query($query, $brand);
                 file_put_contents('debug.log', date('Y-m-d H:i:s') . " - OpenAI completed\n", FILE_APPEND);
             } catch (Exception $e) {
-                $results['openai'] = [
-                    'error' => 'OpenAI Error: ' . $e->getMessage(), 
-                    'content' => '', 
-                    'domains' => [], 
-                    'sentiment' => 0, 
-                    'topics' => []
-                ];
+                $results['openai'] = ['error' => 'OpenAI Error: ' . $e->getMessage(), 'content' => ''];
                 file_put_contents('debug.log', date('Y-m-d H:i:s') . " - OpenAI Error: " . $e->getMessage() . "\n", FILE_APPEND);
             }
         }
-        
+
         // Claude
         if ($apis['claude']['enabled'] && $apis['claude']['key']) {
             try {
@@ -209,17 +216,11 @@ class AIAnalyzer {
                 $results['claude'] = $claude->query($query, $brand);
                 file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Claude completed\n", FILE_APPEND);
             } catch (Exception $e) {
-                $results['claude'] = [
-                    'error' => 'Claude Error: ' . $e->getMessage(), 
-                    'content' => '', 
-                    'domains' => [], 
-                    'sentiment' => 0, 
-                    'topics' => []
-                ];
+                $results['claude'] = ['error' => 'Claude Error: ' . $e->getMessage(), 'content' => ''];
                 file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Claude Error: " . $e->getMessage() . "\n", FILE_APPEND);
             }
         }
-        
+
         // Grok
         if ($apis['grok']['enabled'] && $apis['grok']['key']) {
             try {
@@ -228,17 +229,63 @@ class AIAnalyzer {
                 $results['grok'] = $grok->query($query, $brand);
                 file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Grok completed\n", FILE_APPEND);
             } catch (Exception $e) {
-                $results['grok'] = [
-                    'error' => 'Grok Error: ' . $e->getMessage(), 
-                    'content' => '', 
-                    'domains' => [], 
-                    'sentiment' => 0, 
-                    'topics' => []
-                ];
+                $results['grok'] = ['error' => 'Grok Error: ' . $e->getMessage(), 'content' => ''];
                 file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Grok Error: " . $e->getMessage() . "\n", FILE_APPEND);
             }
         }
-        
+
+        // Perplexity
+        if ($apis['perplexity']['enabled'] && $apis['perplexity']['key']) {
+            try {
+                file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Calling Perplexity\n", FILE_APPEND);
+                $perplexity = new PerplexityAPI($apis['perplexity']['key'], $apis['perplexity']['model']);
+                $results['perplexity'] = $perplexity->query($query, $brand);
+                file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Perplexity completed\n", FILE_APPEND);
+            } catch (Exception $e) {
+                $results['perplexity'] = ['error' => 'Perplexity Error: ' . $e->getMessage(), 'content' => ''];
+                file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Perplexity Error: " . $e->getMessage() . "\n", FILE_APPEND);
+            }
+        }
+
+        // *** SECONDO LAYER GPT: Analisi intelligente di ogni risposta ***
+        if ($apis['openai']['enabled'] && $apis['openai']['key']) {
+            try {
+                file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Starting AI-powered analysis of responses\n", FILE_APPEND);
+                $analysisEngine = new AnalysisEngine($apis['openai']['key']);
+
+                foreach ($results as $ai_name => $response) {
+                    if (!isset($response['error']) && isset($response['content']) && !empty($response['content'])) {
+                        file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Analyzing {$ai_name} response with GPT\n", FILE_APPEND);
+                        $analysis = $analysisEngine->analyzeSingleResponse($ai_name, $response['content'], $brand, $query);
+
+                        // Integra l'analisi nella risposta
+                        $results[$ai_name]['sentiment'] = $analysis['sentiment'] ?? 0;
+                        $results[$ai_name]['sentiment_label'] = $analysis['sentiment_label'] ?? 'neutrale';
+                        $results[$ai_name]['topics'] = $analysis['topics'] ?? [];
+                        $results[$ai_name]['domains'] = $analysis['domains'] ?? [];
+                        $results[$ai_name]['entities'] = $analysis['entities'] ?? [];
+                        $results[$ai_name]['brand_position'] = $analysis['brand_position'] ?? [];
+                        $results[$ai_name]['key_insights'] = $analysis['key_insights'] ?? [];
+                        $results[$ai_name]['tone'] = $analysis['tone'] ?? 'informativo';
+                    } else {
+                        // Risposta con errore o vuota
+                        $results[$ai_name]['sentiment'] = 0;
+                        $results[$ai_name]['sentiment_label'] = 'neutrale';
+                        $results[$ai_name]['topics'] = [];
+                        $results[$ai_name]['domains'] = [];
+                        $results[$ai_name]['entities'] = [];
+                        $results[$ai_name]['brand_position'] = [];
+                        $results[$ai_name]['key_insights'] = [];
+                        $results[$ai_name]['tone'] = 'errore';
+                    }
+                }
+
+                file_put_contents('debug.log', date('Y-m-d H:i:s') . " - AI-powered analysis completed\n", FILE_APPEND);
+            } catch (Exception $e) {
+                file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Analysis Engine Error: " . $e->getMessage() . "\n", FILE_APPEND);
+            }
+        }
+
         return $results;
     }
     

@@ -25,27 +25,20 @@ class GeminiAPI {
     }
     
     public function query($query, $brand = '') {
-        $prompt = "Rispondi alla domanda: {$query}" . 
+        $prompt = "Rispondi alla domanda: {$query}" .
                   ($brand ? " (considera il brand {$brand} se pertinente)" : "");
-        
+
         $response = $this->makeRequest($prompt);
-        
+
         $result = [
             'content' => '',
-            'domains' => [],
-            'sentiment' => 0,
-            'topics' => [],
             'raw_response' => $response
         ];
-        
+
         if ($response && isset($response['candidates'][0]['content']['parts'][0]['text'])) {
-            $content = $response['candidates'][0]['content']['parts'][0]['text'];
-            $result['content'] = $content;
-            $result['domains'] = $this->extractDomains($content);
-            $result['sentiment'] = $this->analyzeSentiment($content);
-            $result['topics'] = $this->extractTopics($content);
+            $result['content'] = $response['candidates'][0]['content']['parts'][0]['text'];
         }
-        
+
         return $result;
     }
     
@@ -91,49 +84,5 @@ class GeminiAPI {
         return null;
     }
     
-    private function extractDomains($text) {
-        $pattern = '/(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})+)/';
-        preg_match_all($pattern, $text, $matches);
-        return array_unique($matches[1] ?? []);
-    }
-    
-    private function analyzeSentiment($text) {
-        // Sentiment basic basato su keyword
-        $positive_words = ['buono', 'ottimo', 'eccellente', 'migliore', 'fantastico'];
-        $negative_words = ['cattivo', 'pessimo', 'terribile', 'peggiore', 'orribile'];
-        
-        $positive_count = 0;
-        $negative_count = 0;
-        
-        foreach ($positive_words as $word) {
-            $positive_count += substr_count(strtolower($text), $word);
-        }
-        
-        foreach ($negative_words as $word) {
-            $negative_count += substr_count(strtolower($text), $word);
-        }
-        
-        if ($positive_count > $negative_count) return 1;
-        if ($negative_count > $positive_count) return -1;
-        return 0;
-    }
-    
-    private function extractTopics($text) {
-        // Topic extraction basic basato su POS tagging simulato
-        $words = str_word_count(strtolower($text), 1);
-        $topics = [];
-        
-        // Filtra parole significative (lunghezza > 4)
-        foreach ($words as $word) {
-            if (strlen($word) > 4 && !in_array($word, ['della', 'delle', 'sono', 'viene', 'hanno'])) {
-                $topics[] = $word;
-            }
-        }
-        
-        // Prendi i 5 topic più comuni
-        $topic_counts = array_count_values($topics);
-        arsort($topic_counts);
-        return array_keys(array_slice($topic_counts, 0, 5));
-    }
 }
 ?>
