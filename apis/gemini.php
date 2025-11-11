@@ -10,6 +10,8 @@ class GeminiAPI {
     }
     
     public function generateFanOutQueries($keyword, $brand = '') {
+        file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Gemini generateFanOutQueries called with keyword: {$keyword}\n", FILE_APPEND);
+
         $brand_context = $brand ? " nel contesto del brand/settore '{$brand}'" : "";
 
         $prompt = "Sei un esperto di SEO e analisi delle query di ricerca.
@@ -38,8 +40,17 @@ GENERA LE 8 QUERY:";
 
         $response = $this->makeRequest($prompt);
 
-        if ($response && isset($response['candidates'][0]['content']['parts'][0]['text'])) {
+        if (!$response) {
+            file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Gemini: makeRequest returned null\n", FILE_APPEND);
+            return [];
+        }
+
+        // Log della risposta per debug
+        file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Gemini response structure: " . json_encode(array_keys($response)) . "\n", FILE_APPEND);
+
+        if (isset($response['candidates'][0]['content']['parts'][0]['text'])) {
             $text = trim($response['candidates'][0]['content']['parts'][0]['text']);
+            file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Gemini generated text: " . substr($text, 0, 200) . "...\n", FILE_APPEND);
 
             // Parse le query - ogni riga è una query
             $queries = explode("\n", $text);
@@ -62,7 +73,10 @@ GENERA LE 8 QUERY:";
                 $queries = array_slice($queries, 0, 8);
             }
 
+            file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Gemini parsed " . count($queries) . " queries\n", FILE_APPEND);
             return $queries;
+        } else {
+            file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Gemini: Invalid response structure. Full response: " . json_encode($response) . "\n", FILE_APPEND);
         }
 
         return [];
@@ -88,11 +102,14 @@ GENERA LE 8 QUERY:";
     
     private function makeRequest($prompt) {
         if (!$this->api_key) {
+            error_log("Gemini: API key missing");
             file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Gemini: API key missing\n", FILE_APPEND);
             return null;
         }
 
         $url = $this->base_url . $this->model . ':generateContent?key=' . $this->api_key;
+
+        file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Gemini: Making request to model {$this->model}\n", FILE_APPEND);
 
         $data = [
             'contents' => [
@@ -124,23 +141,29 @@ GENERA LE 8 QUERY:";
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         if (curl_errno($ch)) {
-            file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Gemini CURL Error: " . curl_error($ch) . "\n", FILE_APPEND);
+            $error = curl_error($ch);
+            error_log("Gemini CURL Error: " . $error);
+            file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Gemini CURL Error: {$error}\n", FILE_APPEND);
             curl_close($ch);
             return null;
         }
 
         curl_close($ch);
 
+        file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Gemini HTTP Status: {$http_code}\n", FILE_APPEND);
+
         if ($http_code === 200) {
             $decoded = json_decode($response, true);
 
             if ($decoded === null) {
-                file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Gemini: Invalid JSON response\n", FILE_APPEND);
+                error_log("Gemini: Invalid JSON response");
+                file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Gemini: Invalid JSON response. Raw: " . substr($response, 0, 500) . "\n", FILE_APPEND);
                 return null;
             }
 
             return $decoded;
         } else {
+            error_log("Gemini HTTP Error {$http_code}: " . substr($response, 0, 200));
             file_put_contents('debug.log', date('Y-m-d H:i:s') . " - Gemini HTTP Error {$http_code}: {$response}\n", FILE_APPEND);
         }
 
