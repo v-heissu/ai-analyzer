@@ -1,27 +1,113 @@
-/* Color Palette for AI Landscape Analyzer */
+/* Professional Color Palette */
 
 :root {
-    --accent-blue: #2563eb;
-    --accent-green: #059669;
-    --accent-purple: #7c3aed;
-    --accent-orange: #ea580c;
-    --text-muted: #64748b;
-    --bg-light: #f8fafc;
-    --border-color: #e2e8f0;
+    --primary-white: #FFFFFF;
+    --primary-dark: #001437;
+    --secondary-dark: #1A2C4C;
+    --accent-blue: #5FB6DB;
+    --text-light: #f8f9fa;
+    --border-color: #dee2e6;
 }
 
-.text-purple {
-    color: var(--accent-purple) !important;
+/* Override Bootstrap primary */
+.bg-primary {
+    background-color: var(--primary-dark) !important;
 }
 
-.bg-gradient-primary {
-    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)) !important;
+.btn-primary {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
 }
 
-.bg-gradient-success {
-    background: linear-gradient(135deg, var(--accent-green), var(--accent-blue)) !important;
+.btn-primary:hover {
+    background-color: var(--secondary-dark);
+    border-color: var(--secondary-dark);
 }
 
-.bg-gradient-warning {
-    background: linear-gradient(135deg, var(--accent-orange), #f59e0b) !important;
+.btn-outline-primary {
+    color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.text-primary {
+    color: var(--primary-dark) !important;
+}
+
+.border-primary {
+    border-color: var(--primary-dark) !important;
+}
+
+/* Secondary */
+.bg-secondary {
+    background-color: var(--secondary-dark) !important;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-dark);
+    border-color: var(--secondary-dark);
+}
+
+.text-secondary {
+    color: var(--secondary-dark) !important;
+}
+
+/* Accent */
+.bg-accent {
+    background-color: var(--accent-blue) !important;
+}
+
+.text-accent {
+    color: var(--accent-blue) !important;
+}
+
+/* Nav tabs */
+.nav-tabs .nav-link {
+    color: var(--secondary-dark);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--primary-dark);
+    border-bottom-color: var(--accent-blue);
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--accent-blue);
+}
+
+/* Cards */
+.card {
+    border-color: var(--border-color);
+}
+
+.card-header {
+    background-color: var(--primary-dark);
+    color: var(--primary-white);
+}
+
+/* Progress bars */
+.progress-bar {
+    background-color: var(--accent-blue);
+}
+
+/* Badges */
+.badge.bg-primary {
+    background-color: var(--primary-dark) !important;
+}
+
+.badge.bg-secondary {
+    background-color: var(--secondary-dark) !important;
+}
+
+/* Links */
+a {
+    color: var(--accent-blue);
+}
+
+a:hover {
+    color: var(--primary-dark);
 }

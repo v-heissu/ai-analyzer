@@ -42,7 +42,7 @@ function startAnalysisWithKeyword(keyword) {
             <div class="card">
                 <div class="card-body text-center">
                     <div class="spinner-border text-primary mb-3" role="status"></div>
-                    <h5>🧠 Generazione Query Fan-out</h5>
+                    <h5>Generazione Query Fan-out</h5>
                     <p class="text-muted">Sto creando query semantiche per: <strong>${keyword}</strong></p>
                 </div>
             </div>
@@ -110,19 +110,19 @@ function startAnalysisWithKeyword(keyword) {
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <h5>📝 Seleziona Prompt per Analisi AI</h5>
+                        <h5>Seleziona Prompt per Analisi AI</h5>
                         <p class="text-muted mb-4">
-                            Ho generato ${queries.length} query semantiche dalla keyword <strong>"${keyword}"</strong>. 
-                            Seleziona quelle da analizzare con i 4 AI models (massimo 5):
+                            Ho generato ${queries.length} query semantiche dalla keyword <strong>"${keyword}"</strong>.
+                            Seleziona quelle da analizzare con i 5 AI models (massimo 5):
                         </p>
-                        
+
                         <div class="row">
                             ${queriesHTML}
                         </div>
-                        
+
                         <div class="text-center mt-4">
                             <button class="btn btn-primary btn-lg me-3" onclick="proceedWithSelectedQueries()">
-                                <i class="fas fa-robot me-2"></i>Analizza con AI Models
+                                Analizza con AI Models
                             </button>
                             <button class="btn btn-outline-secondary" onclick="selectAllQueries()">
                                 Seleziona Tutte
@@ -152,7 +152,7 @@ function startAnalysisWithKeyword(keyword) {
             if (checked === 0) {
                 proceedBtn.prop('disabled', true).text('Seleziona almeno una query');
             } else {
-                proceedBtn.prop('disabled', false).html(`<i class="fas fa-robot me-2"></i>Analizza ${checked} Query con AI Models`);
+                proceedBtn.prop('disabled', false).text(`Analizza ${checked} Query con AI Models`);
             }
         });
     }
@@ -177,13 +177,13 @@ function startAnalysisWithKeyword(keyword) {
 
     function createProgressIndicators() {
         const steps = [
-            {id: 'gemini', name: 'Analisi Fan-out + Contenuti (Gemini)', icon: '🧠'},
-            {id: 'openai', name: 'Generazione Risposte (OpenAI)', icon: '🤖'},
-            {id: 'claude', name: 'Analisi Avanzata (Claude)', icon: '📊'},
-            {id: 'grok', name: 'Insights Aggiuntivi (Grok)', icon: '⚡'},
-            {id: 'perplexity', name: 'Ricerca Real-time (Perplexity)', icon: '🔮'},
-            {id: 'dataforseo', name: 'Dati SERP (DataForSEO)', icon: '🔍'},
-            {id: 'analysis', name: 'Elaborazione AI Comparativa', icon: '📈'}
+            {id: 'gemini', name: 'Analisi Fan-out + Contenuti (Gemini)'},
+            {id: 'openai', name: 'Generazione Risposte (OpenAI)'},
+            {id: 'claude', name: 'Analisi Avanzata (Claude)'},
+            {id: 'grok', name: 'Insights Aggiuntivi (Grok)'},
+            {id: 'perplexity', name: 'Ricerca Real-time (Perplexity)'},
+            {id: 'dataforseo', name: 'Dati SERP (DataForSEO)'},
+            {id: 'analysis', name: 'Elaborazione AI Comparativa'}
         ];
 
         let progressHTML = '';
@@ -191,7 +191,7 @@ function startAnalysisWithKeyword(keyword) {
             progressHTML += `
                 <div class="progress-item" id="progress-${step.id}">
                     <div class="progress-icon loading" id="icon-${step.id}">
-                        <span>${step.icon}</span>
+                        <div class="progress-dot"></div>
                     </div>
                     <div class="flex-grow-1">
                         <strong>${step.name}</strong>
@@ -292,11 +292,11 @@ function startAnalysisWithKeyword(keyword) {
                 break;
             case 'success':
                 iconElement.removeClass('pulsing').addClass('success');
-                statusElement.text('Completato ✓').addClass('text-success');
+                statusElement.text('Completato').addClass('text-success');
                 break;
             case 'error':
                 iconElement.removeClass('pulsing').addClass('error');
-                statusElement.text('Errore ✗').addClass('text-danger');
+                statusElement.text('Errore').addClass('text-danger');
                 break;
         }
     }
@@ -437,7 +437,7 @@ ${errorDetails.responseText}
     function generateResultsHTML(data) {
         return `
             <div class="col-12 mb-4">
-                <h2 class="text-center brand-primary">🚀 AI Landscape Analysis Results</h2>
+                <h2 class="text-center brand-primary">AI Landscape Analysis Results</h2>
                 <p class="text-center text-muted">
                     ${data.is_keyword_mode ? 
                         `Analisi keyword-driven${data.fanout_queries ? ' con ' + data.fanout_queries.length + ' query fan-out generate' : ''}` : 
@@ -455,48 +455,48 @@ ${errorDetails.responseText}
             <div class="col-12">
                 <ul class="nav nav-tabs nav-fill mb-4" id="resultsTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" 
+                        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab"
                                 data-bs-target="#overview" type="button">
-                            📊 Overview
+                            Overview
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="domains-tab" data-bs-toggle="tab" 
+                        <button class="nav-link" id="domains-tab" data-bs-toggle="tab"
                                 data-bs-target="#domains" type="button">
-                            🌐 Domini
+                            Domini
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="sentiment-tab" data-bs-toggle="tab" 
+                        <button class="nav-link" id="sentiment-tab" data-bs-toggle="tab"
                                 data-bs-target="#sentiment" type="button">
-                            😊 Sentiment
+                            Sentiment
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="comparison-tab" data-bs-toggle="tab"
                                 data-bs-target="#comparison" type="button">
-                            🥊 SERP vs AI
+                            SERP vs AI
                         </button>
                     </li>
                     ${data.aggregate_analysis && Object.keys(data.aggregate_analysis).length > 0 ? `
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="insights-tab" data-bs-toggle="tab"
                                 data-bs-target="#insights" type="button">
-                            💡 Strategic Insights
+                            Strategic Insights
                         </button>
                     </li>` : ''}
                     ${data.fanout_queries && data.fanout_queries.length > 0 ? `
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="fanout-tab" data-bs-toggle="tab" 
+                        <button class="nav-link" id="fanout-tab" data-bs-toggle="tab"
                                 data-bs-target="#fanout" type="button">
-                            🧠 Fan-out
+                            Fan-out
                         </button>
                     </li>` : ''}
                     ${data.debug_mode ? `
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link text-warning" id="debug-tab" data-bs-toggle="tab" 
+                        <button class="nav-link text-warning" id="debug-tab" data-bs-toggle="tab"
                                 data-bs-target="#debug" type="button">
-                            🔍 Debug
+                            Debug
                         </button>
                     </li>` : ''}
                 </ul>
@@ -556,32 +556,32 @@ ${errorDetails.responseText}
                 <div class="col-md-3">
                     <div class="metric-card">
                         <div class="metric-number" data-count="${data.metrics?.total_responses || 0}">0</div>
-                        <div class="h6 text-muted">🤖 Risposte AI</div>
+                        <div class="h6 text-light">Risposte AI</div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="metric-card">
                         <div class="metric-number" data-count="${data.metrics?.unique_domains || 0}">0</div>
-                        <div class="h6 text-muted">🌐 Domini Unici</div>
+                        <div class="h6 text-light">Domini Unici</div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="metric-card">
                         <div class="metric-number" data-count="${consensusPercent}">0</div>
-                        <div class="h6 text-muted">🎯 AI Consensus %</div>
+                        <div class="h6 text-light">AI Consensus %</div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="metric-card">
                         <div class="metric-number" data-count="${diversityScore}">0</div>
-                        <div class="h6 text-muted">📚 Topic Diversity</div>
+                        <div class="h6 text-light">Topic Diversity</div>
                     </div>
                 </div>
 
                 <!-- Topic Coverage Chart con altezza fissa -->
                 <div class="col-12 mt-4">
                     <div class="chart-container">
-                        <h5>🎯 Topic Coverage Overview</h5>
+                        <h5>Topic Coverage Overview</h5>
                         <div style="height: 400px; position: relative;">
                             <canvas id="topicsChart"></canvas>
                         </div>
@@ -605,7 +605,7 @@ ${errorDetails.responseText}
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100">
                         <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0">🏆 Brand Landscape</h5>
+                            <h5 class="mb-0">Brand Landscape</h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
@@ -635,7 +635,7 @@ ${errorDetails.responseText}
                             </div>` : ''}
                             ${brand.recommendation ? `
                             <div class="alert alert-info mb-0">
-                                <strong>💡 Raccomandazione:</strong><br>
+                                <strong>Raccomandazione:</strong><br>
                                 ${brand.recommendation}
                             </div>` : ''}
                         </div>
@@ -645,8 +645,8 @@ ${errorDetails.responseText}
                 <!-- AI Model Differences -->
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100">
-                        <div class="card-header bg-purple text-white">
-                            <h5 class="mb-0">🤖 AI Model Differences</h5>
+                        <div class="card-header bg-secondary text-white">
+                            <h5 class="mb-0">AI Model Differences</h5>
                         </div>
                         <div class="card-body">
                             ${Object.entries(aiDiffs).map(([model, diff]) => `
@@ -662,14 +662,14 @@ ${errorDetails.responseText}
                 <!-- Strategic Insights -->
                 <div class="col-md-12 mb-4">
                     <div class="card shadow-sm">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">💡 Strategic Insights</h5>
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Strategic Insights</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 ${insights.map((insight, idx) => `
                                     <div class="col-md-4 mb-3">
-                                        <div class="alert alert-success h-100">
+                                        <div class="alert alert-info h-100">
                                             <strong>${idx + 1}.</strong> ${insight}
                                         </div>
                                     </div>
@@ -682,13 +682,13 @@ ${errorDetails.responseText}
                 <!-- Opportunities & Risks -->
                 <div class="col-md-6">
                     <div class="card shadow-sm">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0">🚀 Opportunità</h5>
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">Opportunità</h5>
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 ${opportunities.map(opp => `
-                                    <li class="list-group-item">✅ ${opp}</li>
+                                    <li class="list-group-item">${opp}</li>
                                 `).join('')}
                             </ul>
                         </div>
@@ -698,12 +698,12 @@ ${errorDetails.responseText}
                 <div class="col-md-6">
                     <div class="card shadow-sm">
                         <div class="card-header bg-danger text-white">
-                            <h5 class="mb-0">⚠️ Rischi</h5>
+                            <h5 class="mb-0">Rischi</h5>
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 ${risks.map(risk => `
-                                    <li class="list-group-item">⛔ ${risk}</li>
+                                    <li class="list-group-item">${risk}</li>
                                 `).join('')}
                             </ul>
                         </div>
@@ -742,7 +742,7 @@ ${errorDetails.responseText}
             <div class="row">
                 <div class="col-md-8">
                     <div class="chart-container">
-                        <h5>🔥 Ranking Domini Citati</h5>
+                        <h5>Ranking Domini Citati</h5>
                         <div style="max-height: 600px; overflow-y: auto;">
                             ${domainRankingsHTML || '<p class="text-muted">Nessun dominio trovato</p>'}
                         </div>
@@ -750,7 +750,7 @@ ${errorDetails.responseText}
                 </div>
                 <div class="col-md-4">
                     <div class="chart-container">
-                        <h5>📊 Distribuzione Domini</h5>
+                        <h5>Distribuzione Domini</h5>
                         <canvas id="domainsDistChart" width="300" height="300"></canvas>
                     </div>
                 </div>
@@ -763,13 +763,13 @@ ${errorDetails.responseText}
             <div class="row">
                 <div class="col-md-6">
                     <div class="chart-container">
-                        <h5>😊 Sentiment Analysis Globale</h5>
+                        <h5>Sentiment Analysis Globale</h5>
                         <canvas id="sentimentChart" width="400" height="300"></canvas>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="chart-container">
-                        <h5>🤖 Sentiment per AI Model</h5>
+                        <h5>Sentiment per AI Model</h5>
                         <canvas id="sentimentByAiChart" width="400" height="300"></canvas>
                     </div>
                 </div>
@@ -782,13 +782,13 @@ ${errorDetails.responseText}
             <div class="row">
                 <div class="col-md-8">
                     <div class="chart-container">
-                        <h5>🥊 SERP vs AI Overview</h5>
+                        <h5>SERP vs AI Overview</h5>
                         <canvas id="serpAiChart" width="600" height="400"></canvas>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="chart-container">
-                        <h5>📈 Metriche Confronto</h5>
+                        <h5>Metriche Confronto</h5>
                         <table class="table table-striped">
                             <tr>
                                 <td><strong>SERP Organici:</strong></td>
@@ -814,7 +814,7 @@ ${errorDetails.responseText}
             <div class="row">
                 <div class="col-12">
                     <div class="chart-container">
-                        <h5>🧠 Query Fan-out Generate (Gemini)</h5>
+                        <h5>Query Fan-out Generate (Gemini)</h5>
                         <p class="text-muted mb-4">Query semantiche derivate dalla keyword principale</p>
                         <div class="row">
                             ${data.fanout_queries.map((query, index) => `
@@ -825,7 +825,7 @@ ${errorDetails.responseText}
                                                 <strong>${index + 1}.</strong> ${query}
                                             </div>
                                             <button class="btn btn-sm btn-outline-primary" onclick="useAsNewQuery('${query.replace(/'/g, '\\\'').replace(/"/g, '&quot;')}')">
-                                                🔄 Usa
+                                                Usa
                                             </button>
                                         </div>
                                     </div>
@@ -843,7 +843,7 @@ ${errorDetails.responseText}
             <div class="row">
                 <div class="col-12">
                     <div class="chart-container">
-                        <h5>🔍 Debug - Risposte Complete API</h5>
+                        <h5>Debug - Risposte Complete API</h5>
                         <div class="accordion" id="debugAccordion">
                             ${generateDebugAccordion(data.ai_responses)}
                         </div>
@@ -929,7 +929,7 @@ ${errorDetails.responseText}
             new Chart(sentimentCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['😊 Positivo', '😐 Neutrale', '😞 Negativo'],
+                    labels: ['Positivo', 'Neutrale', 'Negativo'],
                     datasets: [{
                         data: [positive, neutral, negative],
                         backgroundColor: [
@@ -1033,9 +1033,9 @@ ${errorDetails.responseText}
                             max: 1,
                             ticks: {
                                 callback: function(value) {
-                                    if (value > 0) return '😊 ' + value;
-                                    if (value < 0) return '😞 ' + value;
-                                    return '😐 ' + value;
+                                    if (value > 0) return '+' + value;
+                                    if (value < 0) return value;
+                                    return value;
                                 }
                             }
                         }
@@ -1328,9 +1328,9 @@ ${errorDetails.responseText}
 
     // Utility functions
     function getSentimentLabel(sentiment) {
-        if (sentiment > 0) return '😊 Positivo';
-        if (sentiment < 0) return '😞 Negativo';
-        return '😐 Neutrale';
+        if (sentiment > 0) return 'Positivo';
+        if (sentiment < 0) return 'Negativo';
+        return 'Neutrale';
     }
 
     function calculateOverlap(data) {

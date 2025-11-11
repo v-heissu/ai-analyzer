@@ -18,7 +18,7 @@ ini_set('display_errors', 1);
         <header class="row">
             <div class="col-12 text-center py-4">
                 <h1 class="display-4 brand-primary">AI Landscape Analyzer</h1>
-                <p class="lead text-muted">Analisi competitiva dell'ecosistema AI in tempo reale</p>
+                <p class="lead text-secondary">Analisi competitiva dell'ecosistema AI in tempo reale</p>
             </div>
         </header>
 
@@ -46,7 +46,7 @@ ini_set('display_errors', 1);
     <div class="form-check">
         <input class="form-check-input" type="checkbox" id="debugMode" value="1">
         <label class="form-check-label" for="debugMode">
-            <strong>🔍 Debug Mode</strong> - Mostra risposte complete delle API
+            <strong>Debug Mode</strong> - Mostra risposte complete delle API
         </label>
     </div>
 </div>
@@ -167,7 +167,7 @@ ini_set('display_errors', 1);
 
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary btn-lg px-5 py-3">
-                                    <i class="fas fa-rocket me-2"></i>Analizza Landscape AI
+                                    Analizza Landscape AI
                                 </button>
                             </div>
                         </form>
