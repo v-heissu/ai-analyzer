@@ -127,10 +127,17 @@ function startAnalysisWithKeyword(keyword) {
                 <div class="card">
                     <div class="card-body">
                         <h5>Seleziona Prompt per Analisi AI</h5>
-                        <p class="text-muted mb-4">
+                        <p class="text-muted mb-2">
                             Ho generato ${queries.length} query semantiche dalla keyword <strong>"${keyword}"</strong>.
                             Seleziona quelle da analizzare con i 5 AI models (massimo 5):
                         </p>
+                        <div class="alert alert-info mb-4">
+                            <small>
+                                ⏱ <strong>Tempo di elaborazione:</strong>
+                                1-2 query = 2-4 min • 3-4 query = 5-7 min • 5 query = 8-10 min<br>
+                                Le chiamate AI sono sequenziali, non in parallelo. Più query selezioni, più tempo ci vorrà.
+                            </small>
+                        </div>
 
                         <div class="row">
                             ${queriesHTML}
@@ -374,7 +381,7 @@ function startAnalysisWithKeyword(keyword) {
             data: JSON.stringify(formData),
             contentType: 'application/json',
             dataType: 'json',
-            timeout: 180000, // 3 minuti timeout (per analisi con più query)
+            timeout: 600000, // 10 minuti timeout (5 query × 5 AI models = chiamate seriali lunghe)
             success: function(response) {
                 console.log('Response received:', response);
                 hideGlobalLoadingMessage();
@@ -503,7 +510,10 @@ ${errorDetails.responseText}
                              style="width: 0%"></div>
                     </div>
                     <p class="small text-muted mt-2">
-                        <span id="estimatedTime">Tempo stimato: 30-180 secondi</span>
+                        <span id="estimatedTime">Tempo stimato: 1-10 minuti (dipende dal numero di query)</span>
+                    </p>
+                    <p class="small text-muted">
+                        💡 <em>Con 5 query selezionate l'analisi può richiedere 8-10 minuti</em>
                     </p>
                 </div>
             </div>
@@ -511,34 +521,37 @@ ${errorDetails.responseText}
 
         $('body').append(loadingHTML);
 
-        // Dynamic messages that change every 15 seconds
+        // Dynamic messages that change every 20 seconds (più tempo per query multiple)
         const messages = [
-            'Interrogazione AI models in parallelo...',
+            'Interrogazione AI models (Gemini, OpenAI, Claude, Grok, Perplexity)...',
+            'Elaborazione query multiple in sequenza...',
             'Recupero dati da DataForSEO...',
-            'Analisi GPT delle risposte...',
-            'Elaborazione sentiment e topic...',
+            'Analisi GPT di ogni risposta AI...',
+            'Elaborazione sentiment e topic extraction...',
             'Generazione insights strategici...',
-            'Finalizzazione analisi aggregata...'
+            'Finalizzazione analisi aggregata...',
+            'Quasi pronto, ultimi passaggi...'
         ];
 
         let messageIndex = 0;
         let progress = 0;
 
-        // Update message every 15 seconds
+        // Update message every 20 seconds (era 15)
         window.loadingMessageInterval = setInterval(() => {
             messageIndex = (messageIndex + 1) % messages.length;
             $('#loadingMessage').fadeOut(300, function() {
                 $(this).text(messages[messageIndex]).fadeIn(300);
             });
-        }, 15000);
+        }, 20000);
 
-        // Animate progress bar from 0 to 90% over 120 seconds
+        // Animate progress bar from 0 to 90% over 400 seconds (~6-7 minuti)
+        // Più lento per riflettere tempi più lunghi
         window.loadingProgressInterval = setInterval(() => {
             progress += 1;
             if (progress <= 90) {
                 $('#globalProgressBar').css('width', progress + '%');
             }
-        }, 1333); // 120 seconds / 90 steps = 1.333 seconds per step
+        }, 4444); // 400 seconds / 90 steps = 4.444 seconds per step
     }
 
     function hideGlobalLoadingMessage() {

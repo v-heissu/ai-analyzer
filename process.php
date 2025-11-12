@@ -4,9 +4,10 @@ ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 ini_set('error_log', 'php_errors.log');
 
-// Aumenta timeout per analisi complesse (fino a 3 minuti)
-set_time_limit(180);
-ini_set('max_execution_time', '180');
+// Aumenta timeout per analisi complesse (fino a 10 minuti)
+// Con 5 query × 5 AI models = 25 chiamate seriali → può richiedere 8-10 minuti
+set_time_limit(600);
+ini_set('max_execution_time', '600');
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
